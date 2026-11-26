@@ -1,3 +1,4 @@
+@"
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -16,7 +17,7 @@ spec:
     spec:
       containers:
         - name: complaintbox
-          image: hr1thik/complaintbox:latest
+          image: <your_dockerhub_username>/complaintbox:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 8000
@@ -25,11 +26,32 @@ apiVersion: v1
 kind: Service
 metadata:
   name: complaintbox-service
+  labels:
+    app: complaintbox
 spec:
   selector:
     app: complaintbox
   ports:
-    - protocol: TCP
+    - name: http
+      protocol: TCP
       port: 80
       targetPort: 8000
   type: NodePort
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: complaintbox-servicemonitor
+  namespace: monitoring
+spec:
+  namespaceSelector:
+    matchNames:
+      - complaintbox
+  selector:
+    matchLabels:
+      app: complaintbox
+  endpoints:
+    - port: http
+      path: /metrics
+      interval: 15s
+"@ | Set-Content -Encoding UTF8 k8s\deployment.yml
