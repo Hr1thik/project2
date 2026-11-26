@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: complaintbox
-          image: YOUR_DOCKERHUB_USERNAME/complaintbox:latest
+          image: hr1thik/complaintbox:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 8000
